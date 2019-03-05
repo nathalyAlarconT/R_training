@@ -18,6 +18,15 @@ Guías y ejemplos de R en español
   
   https://www.youtube.com/watch?v=15fuyhe3Z0k&index=1&list=PL0bKK5VrmuYGInna9OspoHGUGLGuUptNa
   
+
+### Parte 2
+
+  - Análisis descriptivo de los datos
+  - Visualizaciones con R
+  
+  Archivo: 
+  
+  - 2_R_Descriptive_analytics.md
   
 -------------------
 

@@ -1,0 +1,135 @@
+---
+title: "Análisis Descriptivo con R"
+output: rmarkdown::github_document
+---
+# Parte 1 - Análisis descriptivo de los datos
+Vamos a realizar el análisis de un dataset
+```{r}
+# Vamos a definir el directorio en el que trabajaremos
+# Define el folder en el que clonaste el repositorio
+path_global <- '/Users/nathaly/MyFiles/DataScience/R_training'
+setwd(path_global)
+```
+
+## Ahora vamos a leer el dataset de entrenamiento
+
+```{r}
+# Definimos el path en el que se encuentra nuestro dataset
+path_dataset <- paste(path_global,'/data/train_titanic.csv', sep='')
+# Leemos el dataset
+df <- read.csv(path_dataset)
+
+df_bk <- read.csv(path_dataset)
+# Ahora visualicemos el archivo
+head(df, n = 20)
+
+```
+## Cuántos datos tenemos?
+```{r}
+# Cuál es la dimensión de nuestro dataset ? 
+# La primera dimensión indica el número de filas/registros/observaciones 
+# La segunda dimensión indica el número de columnas/variables/features
+
+dim(df)
+
+```
+## Qué tipos de datos tenemos?
+```{r}
+# Veamos los tipos de datos de cada una de nuestros features
+
+sapply(df, class)
+```
+```{r}
+# Convertimos a clases la columna Survived
+df$Survived <- as.factor(df$Survived)
+
+```
+
+## Cuál es la proporción de nuestros datos?
+```{r}
+cbind(freq=table(df$Sex), percentage=prop.table(table(df$Sex)) * 100)
+
+```
+## La descripción global del dataset?
+
+```{r}
+summary(df)
+```
+## Qué tan dispersos están los datos ?
+```{r}
+df[is.na(df)] <- 0
+numerical_columns <- unlist(lapply(df, is.numeric))  
+apply(df[, numerical_columns],2, sd)
+apply(df[, numerical_columns],2, mean)
+```
+
+
+## Existe correlación en los datos?
+
+Cómo los datos se relacionan entre si ?
+```{r}
+cor(df[,numerical_columns])
+```
+# Parte 2 - Visualización de los datos
+## Univariate Analysis
+```{r}
+hist(df$Age, main="Distribución de Edades", xlab = "Edad", col="purple")
+```
+### Density Plot
+
+```{r}
+library(lattice)
+
+plot(density(df$Age, na.rm = TRUE))
+```
+### Boxplots
+```{r}
+boxplot(df$Age)
+```
+### Barplot
+Para datos categóricos
+
+```{r}
+barplot(table(df$Embarked), main = "Puntos de Embarque")
+```
+## Missing Values
+
+```{r}
+# install.packages("Amelia")
+library("Amelia")
+missmap(df_bk, y.cex=0.5, col=c("red","grey"))
+```
+## Multivariate Analysis
+Buscamos relaciones e interacciones entre variables
+
+```{r}
+# install.packages('corrplot')
+library(corrplot)
+
+correlations <- cor(df[,numerical_columns], )
+corrplot(correlations, method="circle")
+```
+### Scatterplot
+Muestra la interacción entre dos o más variables. La distribución de los datos indica la relación entre las variables
+```{r}
+pairs(df[, numerical_columns])
+```
+
+Por clase
+```{r}
+pairs(Survived ~ Age + Sex+ Pclass + SibSp + Parch + Fare + Embarked, data = df, col=c('red','green') )
+```
+
+Feature Plot
+```{r}
+# library(caret)
+
+# featurePlot(x=df[, c("Age", "SibSp")], y=df[,c("Survived")],  plot="box")
+```
+
+Mujeres y Niños primero
+```{r}
+barplot(table(df$Survived, df$Sex), col = df$Survived )
+table(df$Survived, df$Sex)
+```
+
